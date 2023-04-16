@@ -1,1 +1,3 @@
 # CechingDatabase
+ run: 
+    make run

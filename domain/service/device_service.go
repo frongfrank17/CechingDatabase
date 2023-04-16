@@ -6,6 +6,11 @@ import (
 	repository "CachingDatabase/domain/repository"
 )
 
+type DeviceInterface interface {
+	InsertData(devicename string, imei string) error
+	GetData(imei string) (string, error)
+	Test() (string, error)
+}
 type deviceService struct {
 	repo repository.DeviceInterface
 }
