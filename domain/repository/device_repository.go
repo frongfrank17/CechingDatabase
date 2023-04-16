@@ -24,7 +24,7 @@ func NewRepo(redis *redis.Client, mongo *mongo.Client) redisDeviceCheching {
 func (rdb redisDeviceCheching) SetData(devicename string, imei string) error {
 	redis_key := imei
 	fmt.Println("Repository : ", imei, " Values : ", devicename)
-	err := rdb.redis.SetNX(ctx, redis_key, devicename, 300*time.Second).Err()
+	err := rdb.redis.SetNX(ctx, redis_key, devicename, 10*time.Second).Err()
 	fmt.Println(err)
 	if err != nil {
 		return err
@@ -41,11 +41,15 @@ func (rdb redisDeviceCheching) GetData(imei string) (string, error) {
 
 }
 func (rdb redisDeviceCheching) SetBackUp(devicename string, imei string) error {
-	mData := make(map[string]string)
-	mData[imei] = imei
+
+	device := DeviceDomain{
+		Imei:       imei,
+		DeviceName: devicename,
+		CreatedAt:  time.Now().UTC(),
+	}
 
 	collection := rdb.mongo.Database("memory").Collection("backup_gateway")
-	_, err := collection.InsertOne(ctx, mData)
+	_, err := collection.InsertOne(ctx, device)
 	if err != nil {
 		return err
 	}
@@ -54,8 +58,16 @@ func (rdb redisDeviceCheching) SetBackUp(devicename string, imei string) error {
 }
 func (rdb redisDeviceCheching) GetBackUp(imei string) (string, error) {
 	collection := rdb.mongo.Database("memory").Collection("backup_gateway")
-	collection.FindOne(ctx, bson.M{imei: imei})
-
-	return "", nil
+	//result := make(map[any]any)
+	var device DeviceDomain
+	err := collection.FindOne(ctx, bson.M{"imei": imei}).Decode(&device)
+	if err == mongo.ErrNoDocuments {
+		return "", mongo.ErrNoDocuments
+	}
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(" Repo Mognodb : ", device.Imei)
+	return device.Imei, nil
 
 }

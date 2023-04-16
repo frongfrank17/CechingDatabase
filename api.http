@@ -2,8 +2,8 @@ POST http://localhost:3000/api/v1/set
 Content-Type: application/json
 
 {
-    "devicename" :"T22" ,
-    "imei" :"ttwtwertw"
+    "devicename" :"TEST01" ,
+    "imei" :"TT011gGSsg"
 }
 ###
-GET http://localhost:3000/api/v1/get/ttwtwertw
+GET http://localhost:3000/api/v1/get/TT011gGSsg

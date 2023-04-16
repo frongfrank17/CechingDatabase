@@ -36,12 +36,16 @@ func (svr deviceService) Test() (string, error) {
 }
 func (svr deviceService) GetData(imei string) (string, error) {
 	result, err := svr.repo.GetData(imei)
+	fmt.Println("Redis : ", result)
 	if err != nil {
-		return "", err
+		fmt.Println("err redis ", err)
+		result, err = svr.repo.GetBackUp(imei)
+		if err != nil {
+			fmt.Println("err mongdo", err)
+			return "", err
+		}
+		return result, nil
 	}
-	_, err = svr.repo.GetBackUp(imei)
-	if err != nil {
-		return "", err
-	}
+
 	return result, nil
 }

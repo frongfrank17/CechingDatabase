@@ -58,8 +58,14 @@ func (svc HttpCommandHandler) CommandSetData(c *fiber.Ctx) error {
 func (svc HttpCommandHandler) QueriseData(c *fiber.Ctx) error {
 	imei := c.Params("imei")
 
-	data, _ := svc.serv.GetData(imei)
-	fmt.Println(data)
+	data, err := svc.serv.GetData(imei)
+	if err != nil {
+		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"statusCode": http.StatusUnauthorized,
+			"message":    "Unauthorized ",
+			"data":       "",
+		})
+	}
 	return c.Status(http.StatusCreated).JSON(fiber.Map{
 		"statusCode": http.StatusCreated,
 		"message":    "Get Message ",

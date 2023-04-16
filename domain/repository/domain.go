@@ -1,8 +1,18 @@
 package repository
 
+import (
+	"time"
+)
+
+type Session struct {
+	DeviceName string    `json:"DeviceName"`
+	Imei       string    `json:"Imei"`
+	CreatedAt  time.Time `json:"created_at" bson:"created_at"`
+}
 type DeviceDomain struct {
-	DeviceName string `json:"DeviceName"`
-	Imei       string `json:"Imei"`
+	DeviceName string    `json:"DeviceName"`
+	Imei       string    `json:"Imei"`
+	CreatedAt  time.Time `json:"createdAt" bson:"createdAt"`
 }
 
 type DeviceInterface interface {
